@@ -1,4 +1,4 @@
-{% macro snowflake_drop_tables(database=target.database, schema=target.schema, table="src_dbt_dataquality") %}
+{% macro drop_raw_table(database=target.database, schema=target.schema, table="src_dbt_dataquality") %}
 
     -- Load Internal Stage
     -- Note file must contain full path location e.g. "/tmp/my_file.json"
@@ -10,8 +10,8 @@
         drop table if exists {{ database }}.{{ schema }}.{{ table }}
     {% endset %}    
     {% do run_query(sql) %}
-
     {% do log(sql, info=True) %}
-    {% do log("snowflake_drop_tables completed", info=True) %}
+
+    {% do log("drop_raw_table completed", info=True) %}
 
 {% endmacro %}

@@ -5,17 +5,19 @@ sources:
     database: "{{ var('dbt_dataquality_database', target.database) }}"
     schema: "{{ var('dbt_dataquality_schema', 'dbt_dataquality') }}"  
     loader: dbt macro - dbt_dataquality.load_internal_stage
-    description: Source table with data from sources.json and run_results.json
+    description: sources.json and run_results.json raw data
 
     tables:
       - name: src_dbt_dataquality
-        description: Table description
-        freshness:
-          warn_after: {count: 15, period: minute }
-          error_after: {count: 20, period: minute}
-        loaded_at_field: "to_timestamp(md_update_date_utc)"
+        description: Holds the raw payloads from sources.json and run_results.json
         columns:
-          - name: col1
-            description: Column1
-          - name: col2
-            description: Column2
+          - name: upload_timestamp_utc
+            description: The UTC time when the dbt log was uploaded (sources.json or run_results.json) 
+          - name: filename
+            description: The file name of the dbt log uploaded (sources.json or run_results.json) 
+          - name: payload
+            description: The actual json payload of the dbt log uploaded (sources.json or run_results.json) 
+          - name: payload_timestamp_utc
+            description: Same as the element "generated_at" as found in the dbt logs (sources.json or run_results.json) 
+          - name: payload_id
+            description: Same as the element "invocation_id" as found in the dbt logs (sources.json or run_results.json) 

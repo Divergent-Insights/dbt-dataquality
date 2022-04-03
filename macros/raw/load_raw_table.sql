@@ -1,4 +1,4 @@
-{% macro snowflake_load_raw_table(database=target.database, schema=target.schema, stage="internal_stage", table="stg_table1") %}
+{% macro load_raw_table(database=target.database, schema=target.schema, stage="internal_stage", table="stg_table1") %}
 
     {% do log("snowflake_load_variant_table started", info=True) %}
     {% do log("Database: " ~ database, info=True) %}
@@ -24,8 +24,8 @@
         commit;        
     {% endset %}    
     {% do run_query(sql) %}
-
     {% do log(sql, info=True) %}
-    {% do log("snowflake_load_raw_table completed", info=True) %}
+
+    {% do log("load_raw_table completed", info=True) %}
 
 {% endmacro %}

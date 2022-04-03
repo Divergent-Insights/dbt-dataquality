@@ -1,4 +1,4 @@
-{% macro snowflake_create_raw_table(database=target.database, schema=target.schema, table="src_dbt_dataquality", replace=false) %}
+{% macro create_raw_table(database=target.database, schema=target.schema, table="src_dbt_dataquality", replace=false) %}
 
     -- Load Internal Stage
     -- Note file must contain full path location e.g. "/tmp/my_file.json"
@@ -22,8 +22,8 @@
         );
     {% endset %}    
     {% do run_query(sql) %}
-
     {% do log(sql, info=True) %}
-    {% do log("snowflake_create_raw_table completed", info=True) %}
+
+    {% do log("create_raw_table completed", info=True) %}
 
 {% endmacro %}

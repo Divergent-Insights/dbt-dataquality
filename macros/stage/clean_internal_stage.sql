@@ -1,4 +1,4 @@
-{% macro snowflake_clean_internal_stage(database=target.database, schema=target.schema, stage="internal_stage", pattern="*.*") %}
+{% macro clean_internal_stage(database=target.database, schema=target.schema, stage="internal_stage", pattern="*.*") %}
 
     {% do log("snowflake_clean_internal_stage started", info=True) %}
     {% do log("Database: " ~ database, info=True) %}
@@ -10,8 +10,8 @@
         remove @{{ database }}.{{ schema }}.{{ stage }} pattern='.{{ pattern }}';
     {% endset %}    
     {% do run_query(sql) %}
-
     {% do log(sql, info=True) %}
-    {% do log("snowflake_clean_internal_stage completed", info=True) %}
+
+    {% do log("clean_internal_stage completed", info=True) %}
 
 {% endmacro %}

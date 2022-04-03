@@ -1,4 +1,4 @@
-{% macro snowflake_load_internal_stage(database=target.database, schema=target.schema, stage="internal_stage", clean_stage=true, overwrite="false", file="my_file") %}
+{% macro load_internal_stage(database=target.database, schema=target.schema, stage="dbt_dataquality", clean_stage=true, file="my_file") %}
 
     -- Load Internal Stage
     -- Note file must contain full path location e.g. "/tmp/my_file.json"
@@ -14,21 +14,13 @@
         {{ snowflake_clean_internal_stage() }}
     {% endif %}
 
-    -- Creating internal stage if it does not exist
-    {% set sql %}
-        create stage if not exists {{ database }}.{{ schema }}.{{ stage }}
-            file_format = ( type = json );        
-    {% endset %}    
-    {% do run_query(sql) %}
-    {% do log(sql, info=True) %}
-
     -- Populating internal stage
     {% set sql %}
-        put file://{{ file }} @{{ database }}.{{ schema }}.{{ stage }} auto_compress=true overwrite = {{ overwrite }};
+        put file://{{ file }} @{{ database }}.{{ schema }}.{{ stage }} auto_compress=true;
     {% endset %}    
     {% do run_query(sql) %}
     {% do log(sql, info=True) %}
 
-    {% do log("snowflake_load_internal_stage completed", info=True) %}
+    {% do log("load_internal_stage completed", info=True) %}
 
 {% endmacro %}
