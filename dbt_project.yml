@@ -1,0 +1,16 @@
+name: 'dbt_dataquality'
+version: '0.0.1'
+
+config-version: 2
+
+require-dbt-version: ">=1.0.0"
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+log-path: "logs"
+packages-install-path: "packages"
+target-path: "target"
+clean-targets: ["target", "packages"]
+
+profile: 'snowflake'

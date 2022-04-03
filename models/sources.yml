@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: dbt_data_quality
+    database: "{{ var('dbt_dataquality_database', target.database) }}"
+    schema: "{{ var('dbt_dataquality_schema', 'dbt_dataquality') }}"  
+    loader: dbt macro - dbt_dataquality.load_internal_stage
+    description: Source table with data from sources.json and run_results.json
+
+    tables:
+      - name: src_dbt_dataquality
+        description: Table description
+        freshness:
+          warn_after: {count: 15, period: minute }
+          error_after: {count: 20, period: minute}
+        loaded_at_field: "to_timestamp(md_update_date_utc)"
+        columns:
+          - name: col1
+            description: Column1
+          - name: col2
+            description: Column2

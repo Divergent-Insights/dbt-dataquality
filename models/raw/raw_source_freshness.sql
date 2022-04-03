@@ -1,0 +1,51 @@
+{{
+    config(
+        materialized='incremental',
+        unique_key='id'
+    )
+}}
+
+with dedup_logs as
+(
+    select s.*
+    from {{ source('dbt_dataquality', 'src_dbt_dataquality') }} s
+    inner join (
+        select payload_id, max(upload_timestamp_utc) as upload_timestamp_utc
+        from my_schema.stg_table1
+        where filename = 'sources.json.gz'
+        group by payload_id
+    ) dl on s.payload_id = dl.payload_id and s.upload_timestamp_utc = dl.upload_timestamp_utc
+),
+flatten_records as
+(
+    select
+        {{ dbt_utils.surrogate_key(['payload_id', 'payload_timestamp_utc', 'results.value:unique_id']) }} as id,
+        payload_id,
+        payload_timestamp_utc,
+        results.value:unique_id::string as unique_id,
+        payload:metadata:dbt_schema_version::string as dbt_schema_version,
+        payload:metadata:dbt_version::string as dbt_version,
+        payload:metadata:generated_at::timestamp_tz as generated_at,
+        payload:metadata:invocation_id::string as invocation_id,
+        results.value:max_loaded_at::timestamp_tz as max_loaded_at,
+        results.value:snapshotted_at::timestamp_tz as snapshotted_at,
+        results.value:max_loaded_at_time_ago_in_s::float as max_loaded_at_time_ago_in_s,
+        results.value:status::string as status,
+        results.value:criteria:warn_after:count::int as warn_count,
+        results.value:criteria:warn_after:period::string as warn_period,
+        results.value:criteria:error_after:count::int as error_count,
+        results.value:criteria:error_after:period::string as error_period,
+        results.value:thread_id::string as thread_id,
+        results.value:execution_time::timestamp_tz as execution_time,
+        results.value:timing[0]:started_at::timestamp_tz as compile_started_at,
+        results.value:timing[0]:completed_at::timestamp_tz as compile_completed_at,
+        results.value:timing[1]:started_at::timestamp_tz as execute_started_at,
+        results.value:timing[1]:completed_at::timestamp_tz as execute_completed_at    
+    from dedup_logs
+    ,lateral flatten(input => payload:results) as results
+
+    {% if is_incremental() %}
+        where payload_timestamp_utc > (select max(payload_timestamp_utc) from {{ this }})
+    {% endif %}
+)
+select * from flatten_records
