@@ -1,6 +1,6 @@
-{% macro drop_raw_table() %}
+{% macro drop_src_table() %}
 
-    {% do log("create_raw_table started", info=True) %}
+    {% do log("drop_src_table started", info=True) %}
     {% set config = _get_config() %}
 
     {% set sql %}
@@ -9,6 +9,6 @@
     {% do run_query(sql) %}
     {% do log(sql, info=True) %}
 
-    {% do log("drop_raw_table completed", info=True) %}
+    {% do log("drop_src_table completed", info=True) %}
 
 {% endmacro %}

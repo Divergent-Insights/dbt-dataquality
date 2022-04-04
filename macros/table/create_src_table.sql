@@ -1,6 +1,6 @@
-{% macro create_raw_table(replace=false) %}
+{% macro create_src_table(replace=false) %}
 
-    {% do log("create_raw_table started", info=True) %}
+    {% do log("create_src_table started", info=True) %}
     {% set config = _get_config() %}
 
     {% set sql %}
@@ -20,6 +20,6 @@
     {% do run_query(sql) %}
     {% do log(sql, info=True) %}
 
-    {% do log("create_raw_table completed", info=True) %}
+    {% do log("create_src_table completed", info=True) %}
 
 {% endmacro %}

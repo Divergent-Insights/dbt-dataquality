@@ -1,6 +1,6 @@
-{% macro load_raw_table() %}
+{% macro load_src_table() %}
 
-    {% do log("load_raw_table started", info=True) %}
+    {% do log("load_src_table started", info=True) %}
     {% set config = _get_config() %}    
 
     {% set sql %}
@@ -23,6 +23,6 @@
     {% do run_query(sql) %}
     {% do log(sql, info=True) %}
 
-    {% do log("load_raw_table completed", info=True) %}
+    {% do log("load_src_table completed", info=True) %}
 
 {% endmacro %}

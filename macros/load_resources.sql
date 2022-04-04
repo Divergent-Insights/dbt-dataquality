@@ -1,6 +1,6 @@
-{% macro load_resources() %}
+{% macro load_resources(file) %}
 
-  {{ load_internal_stage() }}
-  {{ load_raw_table() }}
+  {{ load_internal_stage(file) }}
+  {{ load_src_table() }}
   
 {% endmacro %}
