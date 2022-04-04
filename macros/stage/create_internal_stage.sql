@@ -1,17 +1,13 @@
-{% macro create_internal_stage(database=target.database, schema=target.schema, , stage="dbt_dataquality") %}
+{% macro create_internal_stage() %}
 
-    -- Load Internal Stage
-    -- Note file must contain full path location e.g. "/tmp/my_file.json"
-    {% do log("snowflake_create_variant_table started", info=True) %}
-    {% do log("Database: " ~ database, info=True) %}
-    {% do log("Schema: " ~ schema, info=True) %}
+    {% do log("create_internal_stage started", info=True) %}
+    {% set config = _get_config() %}
 
     {% set sql %}
-      create stage if not exists {{ database }}.{{ schema }}.{{ stage }}
+      create stage if not exists {{ config["database"] }}.{{ config["schema"] }}.{{ config["stage"] }}
         file_format = ( type = json );        
     {% endset %}    
     {% do run_query(sql) %}
-    {% do log(sql, info=True) %}
     {% do log(sql, info=True) %}
 
     {% do log("create_internal_stage completed", info=True) %}

@@ -1,13 +1,10 @@
-{% macro clean_internal_stage(database=target.database, schema=target.schema, stage="internal_stage", pattern="*.*") %}
+{% macro clean_internal_stage() %}
 
-    {% do log("snowflake_clean_internal_stage started", info=True) %}
-    {% do log("Database: " ~ database, info=True) %}
-    {% do log("Schema: " ~ schema, info=True) %}
-    {% do log("Stage: " ~ stage, info=True) %}
-    {% do log("pattern: " ~ file, info=True) %}
+    {% do log("clean_internal_stage started", info=True) %}
+    {% set config = _get_config() %}
 
     {% set sql %}
-        remove @{{ database }}.{{ schema }}.{{ stage }} pattern='.{{ pattern }}';
+        remove @{{ config["database"] }}.{{ config["schema"] }}.{{ config["stage"] }} pattern='.*.*';
     {% endset %}    
     {% do run_query(sql) %}
     {% do log(sql, info=True) %}
