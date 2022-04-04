@@ -13,8 +13,6 @@ packages-install-path: "packages"
 target-path: "target"
 clean-targets: ["target", "packages"]
 
-profile: 'snowflake'
-
 models:
   dbt_dataquality: # this matches the `name:`` config
     sources:
