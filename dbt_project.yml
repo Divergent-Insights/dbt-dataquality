@@ -14,3 +14,10 @@ target-path: "target"
 clean-targets: ["target", "packages"]
 
 profile: 'snowflake'
+
+models:
+  dbt_dataquality: # this matches the `name:`` config
+    sources:
+      +tags: sources
+    tests:
+      +tags: tests

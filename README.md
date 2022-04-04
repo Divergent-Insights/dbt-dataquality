@@ -5,48 +5,57 @@ This [dbt](https://github.com/dbt-labs/dbt-core) package helps to create simple 
 - Access and report on the output from dbt source freshness (sources.json)
 - Access and report on the output from dbt tests (run_results.json)
 
-## Installation Instructions
-1. 
-2.
-
 ## Prerequisites
 - This package is compatible with dbt 1.0.0 and later.
-- Snowflake credentials with the right level of access to create/destroy and configure the following objects: database, schema, internal stage and table
+- Snowflake credentials with the right level of access to create/destroy and configure the following objects:
+  - Database (optional)
+  - Schema (optional)
+  - Internal stage
+  - Table
 
 ----
 
 ## Package Overview
 
-This package provides a set of macros that are grouped logically, where each group provides "opinionated" logic and specialises on setting up a Snowflake environment 
-in very specific way. However, the logic can easily be expanded and adjusted to suit different needs
+Overall, this package focuses on doing two things:
 
-Each environment setup focuses on implementing the following Snowflake resources:
-- Account (configuration only)
-- Role (creation and configuration)
-- Warehouse (creation and configuration)
-- Database (creation and configuration)
-- Schema (creation and confiugration)
-- User (creation and configuration)
-- Internal Stage (creation and configuration)
+1. Creates Snowflake resources to hold dbt sources and tests data
+- Optionally, creates a schema
+- Creates a Snowflake internal stage
+- Creates a variant-column staging table
+
+2. Loads a simple dbt model with dbt sources and tests data
+- First, the data is loaded into a staging table via Snowflake's put command
+- Second, the data is loaded into a variant staging table via Snowflake's copy command
+- Finally, the data is dbt sourced and model to make it suitable for reporting and visualisation
 
 ## Usage
+0. Optionally, set any relevant variables in your dbt_project.yml
+```
+vars:
+  dbt_dataquality:
+    dbt_dataquality_database: my_database # optional, default is target.database
+    dbt_dataquality_schema: my_schema # optional, default is target.schema
+    dbt_dataquality_table: my_table # optional, default is 'stg_dbt_dataquality'
+```
+1. First, use the macro "create_resources" to create the required Snowflake resources
+2. Second, either run dbt source freshness and dbt test and use the relevant "load_log_sources/tests" to load the logs
+3. Create and populate downstream models using dbt run --select sources/tests
+
+### Usage Example
 ```
 dbt run-operation create_resources
 
 dbt source freshness
+dbt run-operation load_log_sources
+dbt run --select sources
+
 dbt test
-
-dbt run-operation load_resources --args {'file: target/sources.json'}
-dbt run-operation load_resources --args {'file: target/run_results.json'}
-
-
+dbt run-operation load_log_tests
+dbt run --select tests
 ```
 
-Note that all arguments are optional. These are the default values:
-- env=1
-- database=target.database
-- schema=target.schema
-- role="my_role"
-- user="my_user"
-- internal_stage="internal_stage"
-- file_format="json"
+## TODO
+- This preliminary version focuses on setting the foundations of the packages and logs flattenning
+- Next iterations of the package will enhance the downstream models
+- Also, a simple dynamic tagging functionality will be added to make nice and simple tests reporting

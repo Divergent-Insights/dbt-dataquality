@@ -11,7 +11,7 @@ with dedup_logs as
     from {{ source('dbt_dataquality', 'src_dbt_dataquality') }} s
     inner join (
         select payload_id, max(upload_timestamp_utc) as upload_timestamp_utc
-        from my_schema.stg_table1
+        from {{ source('dbt_dataquality', 'src_dbt_dataquality') }}
         where filename = 'run_results.json.gz'
         group by payload_id
     ) dl on s.payload_id = dl.payload_id and s.upload_timestamp_utc = dl.upload_timestamp_utc
@@ -41,7 +41,7 @@ flatten_records as
         results.value:timing[0]:completed_at::timestamp_tz timing_execute_completed_at,    
         
         payload:elapsed_time::float as elapsed_time
-    from my_schema.stg_table1 s
+    from dedup_logs
         ,lateral flatten(input => payload:results) as results
 
     {% if is_incremental() %}

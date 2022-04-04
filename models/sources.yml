@@ -3,13 +3,13 @@ version: 2
 sources:
   - name: dbt_dataquality
     database: "{{ var('dbt_dataquality_database', target.database) }}"
-    schema: "{{ var('dbt_dataquality_schema', 'dbt_dataquality') }}"  
+    schema: "{{ var('dbt_dataquality_schema', target.schema) }}"  
     loader: dbt macro - dbt_dataquality.load_internal_stage
     description: sources.json and run_results.json raw data
 
     tables:
       - name: src_dbt_dataquality
-        identifier: "{{ var('dbt_data_quality', 'src_dbt_dataquality') }}"
+        identifier: "{{ var('dbt_dataquality_table', 'stg_dbt_dataquality') }}"
         description: Holds the raw payloads from sources.json and run_results.json
         columns:
           - name: upload_timestamp_utc
