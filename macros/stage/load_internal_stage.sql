@@ -1,4 +1,4 @@
-{% macro load_internal_stage(clean_stage=true, file) %}
+{% macro load_internal_stage(file, clean_stage=true) %}
 
     {% do log("load_internal_stage started", info=True) %}
     {% set config = _get_config() %}
