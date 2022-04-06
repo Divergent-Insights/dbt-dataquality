@@ -19,3 +19,7 @@ models:
       +tags: sources
     tests:
       +tags: tests
+
+vars:
+  dbt_dataquality:
+    dbt_dataquality_target_path: data/target

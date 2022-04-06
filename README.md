@@ -37,6 +37,7 @@ vars:
     dbt_dataquality_database: my_database # optional, default is target.database
     dbt_dataquality_schema: my_schema # optional, default is target.schema
     dbt_dataquality_table: my_table # optional, default is 'stg_dbt_dataquality'
+    dbt_dataquality_target_path: my_target_logs_location # optional, default is 'target'
 ```
 1. First, use the macro "create_resources" to create the required Snowflake resources
 2. Second, either run dbt source freshness and dbt test and use the relevant "load_log_sources/tests" to load the logs
