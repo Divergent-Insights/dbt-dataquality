@@ -49,11 +49,11 @@ dbt run-operation create_resources
 
 dbt source freshness
 dbt run-operation load_log_sources
-dbt run --select sources
+dbt run --select dbt_dataquality.sources
 
 dbt test
 dbt run-operation load_log_tests
-dbt run --select tests
+dbt run --select dbt_dataquality.tests
 ```
 
 ## TODO
