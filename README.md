@@ -51,9 +51,15 @@ dbt source freshness
 dbt run-operation load_log_sources
 dbt run --select dbt_dataquality.sources
 
+# Optionally, since this an incremental model you can use the --full-refresh option to rebuild the model
+dbt run --full-refresh --select dbt_dataquality.sources
+
 dbt test
 dbt run-operation load_log_tests
 dbt run --select dbt_dataquality.tests
+
+# Optionally, since this an incremental model you can use the --full-refresh option to rebuild the model
+dbt run --full-refresh --select dbt_dataquality.tests
 ```
 
 ## TODO
