@@ -1,21 +1,21 @@
-WITH LATEST_SNAPSHOT AS
+with latest_snapshot as
 (
-    SELECT PAYLOAD_ID, STATUS
-    FROM MY_DATABASE.MY_SCHEMA.RAW_SOURCE_FRESHNESS
-    WHERE PAYLOAD_TIMESTAMP_UTC >= (select MAX(PAYLOAD_TIMESTAMP_UTC) from MY_DATABASE.MY_SCHEMA.RAW_SOURCE_FRESHNESS)
+    select payload_id, status
+    from {{ ref('raw_source_freshness') }}
+    where payload_timestamp_utc >= (select max(payload_timestamp_utc) from my_database.my_schema.raw_source_freshness)
 ),
-GROUPED_RESULTS AS
+grouped_results as
 (
-    SELECT PAYLOAD_ID, STATUS, COUNT(STATUS) STATUS_COUNT
-    FROM LATEST_SNAPSHOT
-    GROUP BY PAYLOAD_ID, STATUS
+    select payload_id, status, count(status) status_count
+    from latest_snapshot
+    group by payload_id, status
 ),
-PIVOT_RESULTS AS
+pivot_results as
 (
-    SELECT
-        PAYLOAD_ID, IFNULL("'error'",0) as STALE, IFNULL("'warning'",0) as WARNING, IFNULL("'okay'",0) as OKAY
-    FROM GROUPED_RESULTS    
-    PIVOT(SUM(STATUS_COUNT) for STATUS in ('error', 'warning', 'okay'))
+    select
+        payload_id, ifnull("'error'",0) as stale, ifnull("'warning'",0) as warning, ifnull("'okay'",0) as okay
+    from grouped_results    
+    pivot(sum(status_count) for status in ('error', 'warning', 'okay'))
     
 )
-SELECT * FROM PIVOT_RESULTS
+select * from pivot_results

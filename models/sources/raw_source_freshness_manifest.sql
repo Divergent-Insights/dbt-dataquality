@@ -1,8 +1,5 @@
 {{
-    config(
-        materialized='incremental',
-        unique_key='id'
-    )
+    config(materialized='table')
 }}
 
 with dedup_logs as
