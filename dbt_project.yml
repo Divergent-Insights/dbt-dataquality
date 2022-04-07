@@ -19,3 +19,5 @@ models:
       +tags: sources
     tests:
       +tags: tests
+
+profile: 'snowflake'
