@@ -19,9 +19,9 @@ latest_timestamp as
 pivot_results as
 (
     select
-        payload_id, ifnull("'error'",0) as stale, ifnull("'warning'",0) as warning, ifnull("'okay'",0) as okay
+        payload_id, ifnull("'error'",0) as stale, ifnull("'warning'",0) as warning, ifnull("'pass'",0) as pass
     from grouped_results
-    pivot(sum(status_count) for status in ('error', 'warning', 'okay'))    
+    pivot(sum(status_count) for status in ('error', 'warning', 'pass'))    
 )
 select
     case
@@ -30,7 +30,7 @@ select
     end as status
     ,pr.stale
     ,pr.warning
-    ,pr.okay
+    ,pr.pass
     ,ls.payload_timestamp_utc
 from pivot_results pr
 left join latest_timestamp ls on pr.payload_id = ls.payload_id
