@@ -4,8 +4,13 @@ select distinct
     sfm.loader,
     sf.snapshotted_at,
     sf.status,
-    sfm.database,
-    sfm.schema as source,
+    case
+        when (sf.status = 'error') then 2
+        when (sf.status = 'warning') then 1
+        else 0
+    end as status_code,
+    sfm.database as source_database,
+    sfm.schema as source_schema,
     sfm.name as table_name,
     sfm.description table_description,
     sf.freshness_warn_count,
