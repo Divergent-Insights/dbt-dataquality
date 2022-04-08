@@ -1,14 +1,20 @@
-with latest_snapshot as
+with latest_records as
 (
     select payload_id, status, payload_timestamp_utc
     from {{ ref('raw_source_freshness') }}
-    where payload_timestamp_utc >= (select max(payload_timestamp_utc) from my_database.my_schema.raw_source_freshness)
+    where payload_timestamp_utc >= (select max(payload_timestamp_utc) from {{ ref('raw_source_freshness') }})
 ),
 grouped_results as
 (
     select payload_id, status, count(status) status_count
-    from latest_snapshot
+    from latest_records
     group by payload_id, status
+),
+latest_timestamp as
+(
+    select payload_id, max(payload_timestamp_utc) payload_timestamp_utc 
+    from {{ ref('raw_source_freshness') }}
+    group by payload_id
 ),
 pivot_results as
 (
@@ -19,4 +25,4 @@ pivot_results as
 )
 select pr.*, ls.payload_timestamp_utc
 from pivot_results pr
-left join latest_snapshot ls on pr.payload_id = ls.payload_id
+left join latest_timestamp ls on pr.payload_id = ls.payload_id
