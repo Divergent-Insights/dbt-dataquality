@@ -19,9 +19,9 @@ latest_timestamp as
 pivot_results as
 (
     select
-        payload_id, ifnull("'error'",0) as stale, ifnull("'warning'",0) as warning, ifnull("'pass'",0) as pass
+        payload_id, ifnull("'error'",0) as stale, ifnull("'warn'",0) as warning, ifnull("'pass'",0) as pass
     from grouped_results
-    pivot(sum(status_count) for status in ('error', 'warning', 'pass'))    
+    pivot(sum(status_count) for status in ('error', 'warn', 'pass'))    
 )
 select
     case
