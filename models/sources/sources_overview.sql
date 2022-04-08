@@ -23,6 +23,14 @@ pivot_results as
     from grouped_results
     pivot(sum(status_count) for status in ('error', 'warning', 'okay'))    
 )
-select pr.*, ls.payload_timestamp_utc
+select
+    case
+        when (stale > 0 or warning > 0) then 'Warning: some data sources require attention'
+        else 'It seems that everything is okay'
+    end as status
+    ,pr.stale
+    ,pr.warning
+    ,pr.okay
+    ,ls.payload_timestamp_utc
 from pivot_results pr
 left join latest_timestamp ls on pr.payload_id = ls.payload_id
