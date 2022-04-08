@@ -25,7 +25,7 @@ flatten_records as
     ,lateral flatten(input => payload:sources) as sources
     ,lateral flatten(input => sources.value ) as sources_content
     where sources_content.key in 
-        ('loaded_at_field', 'database', 'description', 'loader', 'source_name', 'source_description', 'package_name', 'schema', 'freshness')
+        ('loaded_at_field', 'database', 'description', 'loader', 'source_name', 'source_description', 'package_name', 'schema', 'freshness', 'name')
 ),
 cleaning_records as
 (
@@ -33,6 +33,7 @@ cleaning_records as
         payload_id,
         payload_timestamp_utc,
         unique_id,
+        "'name'"::string name,
         "'database'"::string database, 
         "'description'"::string description,
         "'loader'"::string loader,
@@ -48,6 +49,6 @@ cleaning_records as
         --(json_extract_path_text("'freshness'", 'filter'))::string freshness_filter
     from flatten_records
     pivot(max(value) for key in 
-        ('loaded_at_field', 'database', 'description', 'loader', 'source_name', 'source_description', 'package_name', 'schema', 'freshness'))
+        ('loaded_at_field', 'database', 'description', 'loader', 'source_name', 'source_description', 'package_name', 'schema', 'freshness', 'name'))
 )
 select * from cleaning_records
