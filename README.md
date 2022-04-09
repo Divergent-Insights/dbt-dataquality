@@ -49,7 +49,6 @@ dbt run-operation create_resources
 
 dbt source freshness
 dbt run-operation load_log_sources
-dbt run-operation load_log_manifest
 dbt run --select dbt_dataquality.sources
 
 # Optionally, since this an incremental model you can use the --full-refresh option to rebuild the model
@@ -57,12 +56,17 @@ dbt run --full-refresh --select dbt_dataquality.sources
 
 dbt test
 dbt run-operation load_log_tests
-dbt run-operation load_log_manifest
 dbt run --select dbt_dataquality.tests
 
 # Optionally, since this an incremental model you can use the --full-refresh option to rebuild the model
 dbt run --full-refresh --select dbt_dataquality.tests
 ```
+
+Note that the load_log_* macros automatically upload the relevant log and manifest files
+For example, the macro load_log_sources loads sources.json and manifest.json
+
+The models created will allow you to dome some simple but powerful reporting as per the image below
+![alt text](dashboards/dashboard1.png)
 
 ## TODO
 - This preliminary version focuses on setting the foundations of the packages and logs flattenning
