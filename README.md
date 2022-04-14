@@ -37,13 +37,21 @@ vars:
     dbt_dataquality_database: my_database # optional, default is target.database
     dbt_dataquality_schema: my_schema # optional, default is target.schema
     dbt_dataquality_table: my_table # optional, default is 'stg_dbt_dataquality'
-    dbt_dataquality_target_path: my_target_logs_location # optional, default is 'target'
+    dbt_dataquality_target_path: my_dbt_target_directory # optional, default is 'target'
 ```
 1. First, use the macro "create_resources" to create the required Snowflake resources
 2. Second, either run dbt source freshness and dbt test and use the relevant "load_log_sources/tests" to load the logs
 3. Create and populate downstream models using dbt run --select sources/tests
 
 ### Usage Example
+#### Step 1. Snowflake Resources Creation
+Use the following command ```dbt run-operation create_resources``` to create the resources where dbt logging data is uploaded into. This macro does the following:
+- If it does not exist, a Snowflake schema is created
+- If it does not exist, a Snowflake internal stage is created
+- If is does not exist, a Snowflake table is created
+
+#### Summary
+Here's all the steps put together:
 ```
 dbt run-operation create_resources
 
