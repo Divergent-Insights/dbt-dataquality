@@ -1,4 +1,4 @@
-{% macro create_internal_stage() %}
+{% macro create_internal_stage(dry_run=False) %}
 
     {% do log("create_internal_stage started", info=True) %}
     {% set config = _get_config() %}
@@ -6,8 +6,12 @@
     {% set sql %}
       create stage if not exists {{ config["database"] }}.{{ config["schema"] }}.{{ config["stage"] }}
         file_format = ( type = json );        
-    {% endset %}    
-    {% do run_query(sql) %}
+    {% endset %}
+
+    {% if dry_run %}
+        {% do run_query(sql) %}
+    {% endif %}
+
     {% do log(sql, info=True) %}
 
     {% do log("create_internal_stage completed", info=True) %}

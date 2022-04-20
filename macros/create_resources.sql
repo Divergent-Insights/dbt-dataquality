@@ -1,4 +1,4 @@
-{% macro create_resources(dry_run = false) %}
+{% macro create_resources(dry_run=False) %}
 
   {{ create_schema(dry_run) }}
   {{ create_internal_stage(dry_run) }}
