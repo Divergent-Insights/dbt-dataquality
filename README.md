@@ -31,6 +31,11 @@ Overall, this package focuses on doing two things:
 
 ---
 
+## High Level Architecture
+
+![High Level Architecture](https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dbt_dataquality-high_level_architecture.png)
+
+
 ## Usage
 - Set any relevant variables in your dbt_project.yml (optional)
 
@@ -40,8 +45,10 @@ Overall, this package focuses on doing two things:
       dbt_dataquality_database: my_database # optional, default is target.database
       dbt_dataquality_schema: my_schema # optional, default is target.schema
       dbt_dataquality_table: my_table # optional, default is 'stg_dbt_dataquality'
+      dbt_dataquality_stage: my_internal_stage | my_external_stage, default is 'dbt_dataquality'),
       dbt_dataquality_target_path: my_dbt_target_directory # optional, default is 'target'
   ```
+  **Important**: when using an external stage you need to set the parameter `load_from_internal_stage` to `False` on the load_log_* macros. See below for more details
 
 - Use the macro `create_resources` to create the required Snowflake resources
   - If you have the right permissions, you should be able to run this macro to create all resources required by the dbt_dataquality package
@@ -59,6 +66,13 @@ Overall, this package focuses on doing two things:
 - Use the load macros provided by the dbt_quality package to load the dbt logging information that's required
   - Use the macro `load_log_sources` to load sources.json and manifest.json files
   - Use the macro `load_log_tests` to load run_results.json and manifest.json files
+  - To load data from an external stage, you must:
+    - Workout on your own how to create and load the data on the external stage
+    - If you are using the `create_resources` macro then set the parameter `create_internal_stage` to `False`
+      - For example: `dbt run-operation create_resources --args '{create_internal_stage: False}'`
+    - Set the package variable `dbt_dataquality_stage: my_external_stage` (as described at the beginning of the Usage section)
+    - When running the `load_log_sources` and `load_log_tests` macros set the parameter `load_from_internal_stage` to `False`
+      - For example: `dbt run-operation load_log_sources --args '{load_from_internal_stage: False}'`
 
 - Create and populate downstream models
   - Use `dbt run --select dbt_quality.sources` to load source freshness logs
