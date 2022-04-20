@@ -75,7 +75,7 @@ For example, the macro load_log_sources loads sources.json and manifest.json
 
 The models created will allow you to dome some simple but powerful reporting as per the image below
 
-![Sample Dashboard](dashboards/dashboard1.png)
+![Sample Dashboard](https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dashboard1.png)
 
 ## TODO
 - This preliminary version focuses on setting the foundations of the packages and logs flattenning
