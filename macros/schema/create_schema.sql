@@ -1,4 +1,4 @@
-{% macro create_schema(database=target.database) %}
+{% macro create_schema(database=target.database, dry_run=False) %}
 
     {% do log("create_schema started", info=True) %}
 
@@ -6,8 +6,12 @@
 
     {% set sql %}
         create schema if not exists {{ config["database"] }}.{{ config["schema"] }};
-    {% endset %}    
-    {% do run_query(sql) %}
+    {% endset %}
+
+    {% if dry_run %}
+        {% do run_query(sql) %}
+    {% endif %}        
+
     {% do log(sql, info=True) %}
 
     {% do log("create_schema completed", info=True) %}

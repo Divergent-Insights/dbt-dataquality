@@ -5,7 +5,7 @@
 
     {% set sql %}
         remove @{{ config["database"] }}.{{ config["schema"] }}.{{ config["stage"] }} pattern='.*.*';
-    {% endset %}    
+    {% endset %}
     {% do run_query(sql) %}
     {% do log(sql, info=True) %}
 

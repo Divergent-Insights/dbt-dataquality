@@ -1,4 +1,4 @@
-{% macro create_src_table(replace=false) %}
+{% macro create_src_table(replace=False, dry_run=False) %}
 
     {% do log("create_src_table started", info=True) %}
     {% set config = _get_config() %}
@@ -16,8 +16,12 @@
             payload_timestamp_utc timestamp_tz,
             payload_id string
         );
-    {% endset %}    
-    {% do run_query(sql) %}
+    {% endset %}
+
+    {% if dry_run %}
+        {% do run_query(sql) %}
+    {% endif %}
+
     {% do log(sql, info=True) %}
 
     {% do log("create_src_table completed", info=True) %}

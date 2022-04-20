@@ -1,7 +1,7 @@
-{% macro create_resources() %}
+{% macro create_resources(dry_run=False) %}
 
-  {{ create_schema() }}
-  {{ create_internal_stage() }}
-  {{ create_src_table() }}
+  {{ create_schema(dry_run) }}
+  {{ create_internal_stage(dry_run) }}
+  {{ create_src_table(dry_run) }}
   
 {% endmacro %}
