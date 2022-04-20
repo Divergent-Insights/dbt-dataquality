@@ -64,7 +64,7 @@ Overall, this package focuses on doing two things:
   - Use `dbt run --select dbt_quality.sources` to load source freshness logs
   - Use `dbt run --select dbt_quality.tests` to load tests logs
 
-### Summary
+### Usage Summary
 Here's all the steps put together:
 ```
 dbt run-operation create_resources
@@ -80,7 +80,7 @@ dbt test
 dbt run-operation load_log_tests
 dbt run --select dbt_dataquality.tests
 
-# Optionally, since this an incremental model you can use the --full-refresh option to rebuild the model
+# Optionally, the dbt_dataquality packages created incremental models so don't forget that you can use the --full-refresh option to rebuild them
 dbt run --full-refresh --select dbt_dataquality.tests
 ```
 
