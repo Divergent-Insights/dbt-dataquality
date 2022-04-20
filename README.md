@@ -101,7 +101,9 @@ dbt run --full-refresh --select dbt_dataquality.tests
 Note that the load_log_* macros automatically upload the relevant log and manifest files
 For example, the macro load_log_sources loads sources.json and manifest.json
 
-The models created will allow you to dome some simple but powerful reporting as per the image below
+## Dashboards
+- The models created will allow you to dome some simple but powerful reporting as per the image below
+- This package includes a nice and simple Power BI sample dashboard to get you going!
 
 ![Sample Dashboard](https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dashboard1.png)
 
