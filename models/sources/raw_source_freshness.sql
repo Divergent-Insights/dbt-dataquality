@@ -37,7 +37,7 @@ flatten_records as
         results.value:criteria:error_after:period::string as freshness_error_period,
         results.value:criteria:filter::string as freshness_filter,
         results.value:thread_id::string as thread_id,
-        results.value:execution_time::timestamp_tz as execution_time,
+        results.value:execution_time::float as execution_time,
         results.value:timing[0]:started_at::timestamp_tz as compile_started_at,
         results.value:timing[0]:completed_at::timestamp_tz as compile_completed_at,
         results.value:timing[1]:started_at::timestamp_tz as execute_started_at,
