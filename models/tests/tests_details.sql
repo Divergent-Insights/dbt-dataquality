@@ -2,7 +2,7 @@ select distinct
     tm.database
     ,split_part(file_key_name, '.', -1) table_name
     ,tm.column_name
-    ,t.status
+    ,iff(status='success', 'pass', status) status
     ,case
         when (t.status = 'error') then 100
         when (t.status = 'fail') then 50
