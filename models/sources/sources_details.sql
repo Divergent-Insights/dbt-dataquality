@@ -21,4 +21,4 @@ select distinct
     sf.freshness_filter
 from {{ ref('raw_source_freshness') }} sf
 left join {{ ref('raw_source_freshness_manifest') }} sfm on sf.unique_id = sfm.unique_id
-where sf.payload_timestamp_utc >= (select max(payload_timestamp_utc) from {{ ref('raw_source_freshness') }})
+where sf.payload_timestamp_utc = (select max(payload_timestamp_utc) from {{ ref('raw_source_freshness') }})
