@@ -11,4 +11,4 @@ select distinct
     end as status_code
 from {{ ref('raw_tests_manifest') }} tm
 left join {{ ref('raw_tests') }} t on t.unique_id = tm.unique_id
-where tm.payload_timestamp_utc = (select max(payload_timestamp_utc) from {{ ref('raw_tests') }})
+--where tm.payload_timestamp_utc = (select max(payload_timestamp_utc) from {{ ref('raw_tests') }})
