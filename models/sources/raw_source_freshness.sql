@@ -13,8 +13,7 @@ with dedup_logs as
         select max(upload_timestamp_utc)
         from {{ source('dbt_dataquality', 'stg_dbt_dataquality') }}
         where filename = 'sources.json.gz'
-    )    
-
+    )
 ),
 flatten_records as
 (
