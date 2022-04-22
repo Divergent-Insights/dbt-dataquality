@@ -1,40 +1,46 @@
 # dbt Data Quality
 
-This [dbt](https://github.com/dbt-labs/dbt-core) package helps to create simple flatten models from the outputs of dbt sources freshness and dbt tests
+This [dbt](https://github.com/dbt-labs/dbt-core) package helps to create simple data models from the outputs of `dbt sources freshness` and `dbt tests`. That is, this package will help you to
 
-- Access and report on the output from dbt source freshness (sources.json)
-- Access and report on the output from dbt tests (run_results.json)
+- Access and report on the output from dbt source freshness (sources.json, manifest.json)
+- Access and report on the output from dbt tests (run_results.json, manifest.json)
 
 ## Prerequisites
-- This package is compatible with dbt 1.0.0 and later.
+
+- This package is compatible with dbt 1.0.0 and later
+- This packages uses Snowflake as the backend for reporting. Contributions are welcomed to support other backend engines
 - Snowflake credentials with the right level of access to create/destroy and configure the following objects:
   - Database (optional)
   - Schema (optional)
-  - Internal stage
+  - Internal stage (recommended but optional). Alternatively, you can use an external stage
   - Table
-
----
-
-## Package Overview
-
-Overall, this package focuses on doing two things:
-
-- Creation of Snowflake resources to store and make available dbt logging information
-  - Creates a schema (optional)
-  - Creates a Snowflake internal stage (optional)
-  - Creates a variant-column staging table
-
-- Creating and populating a simple dbt model with dbt logging information for reporting purposes
-  - First, the data is loaded into a staging table via Snowflake's put command
-  - Second, the data is loaded into a variant staging table via Snowflake's copy command
-  - Finally, the data is dbt sourced and model to make it suitable for reporting and visualisation
-
----
 
 ## High Level Architecture
 
-![High Level Architecture](https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dbt_dataquality-high_level_architecture.png)
+![High-Level Architecture](https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dbt_dataquality-high_level_architecture.png)
 
+## Package Overview
+
+As per the high-level architecture diagram, these are the different functionalities that this package provides:
+
+- (Optional) Creation of Snowflake resources to store and make available dbt logging information
+  - Create a database (optional) - this is only provided for convenience and very unlikely to be required by you
+  - Creates a schema (optional)
+  - Creates an internal stage (optional)
+  - Creates a variant-column staging table
+
+- Loads dbt logging information on an internal stage
+  - This is achieved via a set of dbt macros together with the Snowflake PUT command
+
+- Copies dbt logging information into a Snowflake table
+  - This is achieved via a set of dbt macros together with the Sowflake COPY command
+
+- Creating and populating simple dbt models to report on `dbt source freshness` and `dbt tests`
+  - Raw logging data is modelled downstream and contextualised for reporting purposes
+
+- Bonus - it provides a ready-to-go Power BI report built on top the dbt models to showcase how this data can be used
+
+---
 
 ## Usage
 - Set any relevant variables in your dbt_project.yml (optional)
@@ -94,7 +100,9 @@ dbt test
 dbt run-operation load_log_tests
 dbt run --select dbt_dataquality.tests
 
-# Optionally, the dbt_dataquality packages created incremental models so don't forget that you can use the --full-refresh option to rebuild them
+# Optionally, the dbt_dataquality package uses incremental models so don't forget to use the option `--full-refresh` to rebuild the models
+# For example
+dbt run --full-refresh --select dbt_dataquality.sources
 dbt run --full-refresh --select dbt_dataquality.tests
 ```
 
