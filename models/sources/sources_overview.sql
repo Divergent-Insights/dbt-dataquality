@@ -2,7 +2,7 @@ with latest_records as
 (
     select payload_id, status, payload_timestamp_utc
     from {{ ref('raw_source_freshness') }}
-    where payload_timestamp_utc >= (select max(payload_timestamp_utc) from {{ ref('raw_source_freshness') }})
+    where payload_timestamp_utc = (select max(payload_timestamp_utc) from {{ ref('raw_source_freshness') }})
 ),
 grouped_results as
 (
