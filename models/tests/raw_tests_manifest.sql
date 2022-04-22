@@ -22,6 +22,8 @@ flatten_records as
         ,case
             when tests_content.key = 'tags' 
                 then coalesce(replace(replace(replace(regexp_substr(replace(replace(tests_content.value,' '),'\'','"'), '(dq:)[^,]+(",)|(dq:)[^,]+("])'),'dq:'),'",'),'"]'),'unkonwn')
+            when tests_content.key = 'column_name' 
+                then coalesce(tests_content.value, 'n/a')
             else tests_content.value
         end as value
     from dedup_logs
