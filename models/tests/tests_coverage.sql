@@ -30,8 +30,7 @@ with error as
         ,coalesce(fail.fail,0) fail
         ,coalesce(pass.pass,0) pass
         ,(coalesce(error.error,0) + coalesce(fail.fail,0) + coalesce(pass.pass,0)) total
-    from
-        from {{ ref('tests_details') }} td
+    from {{ ref('tests_details') }} td
         left join error on td.quality_tag = error.quality_tag
         left join fail on td.quality_tag = fail.quality_tag
         left join pass on td.quality_tag = pass.quality_tag
