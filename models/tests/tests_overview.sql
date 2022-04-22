@@ -29,12 +29,13 @@ clean_pivot_results as
             when (error > 0 or fail > 0) then 1
             else 0
         end as status_code
-        ,pr.error
-        ,pr.fail
-        ,pr.pass
-    from pivot_results pr
+        ,error
+        ,fail
+        ,pass
+    from pivot_results
 )
 select
+    distinct
     lr.payload_id
     ,lr.payload_timestamp_utc
     ,cpv.status

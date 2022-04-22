@@ -29,19 +29,19 @@ clean_pivot_results as
             when (stale > 0 or warning > 0) then 1
             else 0
         end as status_code
-        ,pr.stale
-        ,pr.warning
-        ,pr.pass
-        ,ls.payload_timestamp_utc
+        ,stale
+        ,warning
+        ,pass
     from pivot_results pr
 )
 select
+    distinct
     lr.payload_id
     ,lr.payload_timestamp_utc
     ,cpv.status
     ,cpv.status_code
-    ,cpv.error
-    ,cpv.fail
+    ,cpv.stale
+    ,cpv.warning
     ,cpv.pass
 from latest_records lr
     left join clean_pivot_results cpv on cpv.payload_id = lr.payload_id
