@@ -1,4 +1,6 @@
 select distinct
+    sf.payload_id
+    ,sf.payload_timestamp_utc
     sfm.source_name,
     sfm.source_description,
     sfm.loader,

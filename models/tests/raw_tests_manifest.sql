@@ -5,10 +5,10 @@
 with dedup_logs as
 (
     select s.*
-    from my_database.my_schema.stg_dbt_dataquality s
+    from {{ source('dbt_dataquality', 'stg_dbt_dataquality') }} s
     where s.upload_timestamp_utc = (
-        select max(upload_timestamp_utc) as upload_timestamp_utc
-        from my_database.my_schema.stg_dbt_dataquality
+        select max(upload_timestamp_utc)
+        from {{ source('dbt_dataquality', 'stg_dbt_dataquality') }}
         where filename = 'manifest.json.gz'
     )
 ),

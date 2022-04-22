@@ -8,7 +8,7 @@ sources:
     description: sources.json and run_results.json raw data
 
     tables:
-      - name: src_dbt_dataquality
+      - name: stg_dbt_dataquality
         identifier: "{{ var('dbt_dataquality_table', 'stg_dbt_dataquality') }}"
         description: Holds the raw payloads from sources.json and run_results.json
         columns:

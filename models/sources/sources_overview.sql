@@ -10,31 +10,38 @@ grouped_results as
     from latest_records
     group by payload_id, status
 ),
-latest_timestamp as
-(
-    select payload_id, max(payload_timestamp_utc) payload_timestamp_utc 
-    from {{ ref('raw_source_freshness') }}
-    group by payload_id
-),
 pivot_results as
 (
     select
         payload_id, ifnull("'error'",0) as stale, ifnull("'warn'",0) as warning, ifnull("'pass'",0) as pass
     from grouped_results
     pivot(sum(status_count) for status in ('error', 'warn', 'pass'))    
+),
+clean_pivot_results as
+(
+    select
+        payload_id
+        ,case
+            when (stale > 0 or warning > 0) then 'Warning: some data sources require attention'
+            else 'It seems that everything is okay'
+        end as status
+        ,case
+            when (stale > 0 or warning > 0) then 1
+            else 0
+        end as status_code
+        ,pr.stale
+        ,pr.warning
+        ,pr.pass
+        ,ls.payload_timestamp_utc
+    from pivot_results pr
 )
 select
-    case
-        when (stale > 0 or warning > 0) then 'Warning: some data sources require attention'
-        else 'It seems that everything is okay'
-    end as status
-    ,case
-        when (stale > 0 or warning > 0) then 1
-        else 0
-    end as status_code
-    ,pr.stale
-    ,pr.warning
-    ,pr.pass
-    ,ls.payload_timestamp_utc
-from pivot_results pr
-left join latest_timestamp ls on pr.payload_id = ls.payload_id
+    lr.payload_id
+    ,lr.payload_timestamp_utc
+    ,cpv.status
+    ,cpv.status_code
+    ,cpv.error
+    ,cpv.fail
+    ,cpv.pass
+from latest_records lr
+    left join clean_pivot_results cpv on cpv.payload_id = lr.payload_id
