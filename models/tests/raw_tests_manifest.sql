@@ -44,6 +44,7 @@ cleaning_records as
         ,"'description'"::string description
         ,"'column_name'"::string column_name
         ,"'file_key_name'"::string file_key_name
+        ,"'tags'"::string tags
     from flatten_records
     pivot(max(value) for key in 
         ('name', 'column_name', 'database', 'description', 'file_key_name', 'package_name', 'tags'))
