@@ -19,6 +19,6 @@ select distinct
         'error: ' || ifnull('after' || sf.freshness_error_count::string || ' ' || sf.freshness_error_period , 'undefined')
     ) as freshness_check,
     sf.freshness_filter
-from {{ ref('raw_source_freshness') }} sf
-left join {{ ref('raw_source_freshness_manifest') }} sfm on sf.unique_id = sfm.unique_id
+from {{ ref('raw_source_freshness_manifest') }} sfm
+left join {{ ref('raw_source_freshness') }} sf on sf.unique_id = sfm.unique_id
 where sf.payload_timestamp_utc = (select max(payload_timestamp_utc) from {{ ref('raw_source_freshness') }})

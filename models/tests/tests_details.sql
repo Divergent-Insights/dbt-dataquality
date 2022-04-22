@@ -1,5 +1,6 @@
-select distinct
-    tm.database
+select
+    name test_name
+    ,tm.database
     ,split_part(file_key_name, '.', -1) table_name
     ,tm.column_name
     ,iff(status='success', 'pass', status) status
