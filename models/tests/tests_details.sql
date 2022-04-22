@@ -1,6 +1,6 @@
 select distinct
     tm.database
-    ,split_part(file_key_name, '.', -1) table
+    ,split_part(file_key_name, '.', -1) table_name
     ,tm.column_name
     ,t.status
     ,case
