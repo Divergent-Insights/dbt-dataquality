@@ -1,4 +1,6 @@
-
+{{
+    config(materialized='table')
+}}
 
 with dedup_logs as
 (
@@ -17,13 +19,16 @@ flatten_records as
         ,payload_timestamp_utc
         ,tests.key::string unique_id
         ,tests_content.key
-        ,tests_content.value
-        ,tests.value:tags[0] tag1
+        ,case
+            when tests_content.key = 'tags' 
+                then coalesce(replace(replace(replace(regexp_substr(replace(replace(tests_content.value,' '),'\'','"'), '(dq:)[^,]+(",)|(dq:)[^,]+("])'),'dq:'),'",'),'"]'),'unkonwn')
+            else tests_content.value
+        end as value
     from dedup_logs
     ,lateral flatten(input => payload:nodes) as tests
     ,lateral flatten(input => tests.value ) as tests_content
     where 
-        tests_content.key in ('name', 'column_name', 'database', 'description', 'file_key_name', 'package_name')
+        tests_content.key in ('name', 'column_name', 'database', 'description', 'file_key_name', 'package_name', 'tags')
         and unique_id like 'test%'
 )
 ,
@@ -39,9 +44,8 @@ cleaning_records as
         ,"'description'"::string description
         ,"'column_name'"::string column_name
         ,"'file_key_name'"::string file_key_name
-        ,tag1
     from flatten_records
     pivot(max(value) for key in 
-        ('name', 'column_name', 'database', 'description', 'file_key_name', 'package_name'))
+        ('name', 'column_name', 'database', 'description', 'file_key_name', 'package_name', 'tags'))
 )
 select * from cleaning_records
