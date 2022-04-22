@@ -1,5 +1,7 @@
 select
-    name test_name
+    t.payload_id
+    ,t.payload_timestamp_utc
+    ,name test_name
     ,tags quality_tag
     ,tm.database
     ,split_part(file_key_name, '.', -1) table_name
