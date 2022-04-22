@@ -1,5 +1,6 @@
 select distinct
     tm.database
+    ,split_part(file_key_name, '.', -1) table
     ,tm.column_name
     ,t.status
     ,case
