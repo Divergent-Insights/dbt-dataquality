@@ -27,11 +27,11 @@ select
     case
         when (error > 0 or fail > 0) then 'Warning: some data quality issues were detected'
         else 'It seems that everything is okay'
-    end as status,
-    case
-        when (sf.status = 'error') or (sf.status = 'warn') then 1
+    end as status
+    ,case
+        when (sf.status = 'error') or (sf.status = 'fail') then 1
         else 0
-    end as status_code,
+    end as status_code
     ,pr.error
     ,pr.fail
     ,pr.pass

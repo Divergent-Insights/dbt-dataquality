@@ -27,11 +27,11 @@ select
     case
         when (stale > 0 or warning > 0) then 'Warning: some data sources require attention'
         else 'It seems that everything is okay'
-    end as status,
-    case
+    end as status
+    ,case
         when (sf.status = 'error') or (sf.status = 'warn') then 1
         else 0
-    end as status_code,
+    end as status_code
     ,pr.stale
     ,pr.warning
     ,pr.pass
