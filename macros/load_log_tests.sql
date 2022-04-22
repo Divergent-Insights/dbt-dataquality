@@ -4,7 +4,7 @@
   {% set log_file = config["dbt_target_path"] ~ '/run_results.json' %}
 
   {% if load_from_internal_stage %}
-      {{ load_from_internal_stage(file=log_file) }}
+      {{ load_internal_stage(file=log_file) }}
   {% endif %}
 
   {{ load_src_table() }}

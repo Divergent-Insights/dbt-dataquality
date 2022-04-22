@@ -19,12 +19,16 @@ with dedup_logs as
 flatten_records as
 (
     select
+        {{ dbt_utils.surrogate_key(['payload_id', 'payload_timestamp_utc', 'results.value:unique_id']) }} as id,
+        payload_id,
+        payload_timestamp_utc,
+        results.value:unique_id::string as unique_id,
+
         payload:metadata:dbt_schema_version::string as dbt_schema_version,
         payload:metadata:dbt_version::string as dbt_version,
         payload:metadata:generated_at::timestamp_tz as generated_at,
         payload:metadata:invocation_id::string as invocation_id,
         
-        results.value:unique_id::string as unique_id,
         results.value:status::string as status,
         results.value:message::string as message,
         results.value:failures::string as failures,
