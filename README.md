@@ -2,8 +2,10 @@
 
 This [dbt](https://github.com/dbt-labs/dbt-core) package helps you to
 
-- Access and report on the output from `dbt source freshness` (sources.json and manifest.json)
-- Access and report on the output from `dbt test` (run_results.json and manifest.json)
+- Access and report on the outputs from `dbt source freshness` ([sources.json](https://docs.getdbt.com/reference/artifacts/sources-json) and [manifest.json](https://docs.getdbt.com/reference/artifacts/manifest-json))
+- Access and report on the outputs from `dbt test` ([run_results.json](https://docs.getdbt.com/reference/artifacts/run-results-json) and [manifest.json](https://docs.getdbt.com/reference/artifacts/manifest-json))
+
+![Live Demo Dashboard]((https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dbt_dataquality_dashboard_preview.gif)
 
 ## Prerequisites
 
@@ -22,6 +24,7 @@ Here's some ideas where we would love your contribution:
 
 - Adding support for other databases such as Microsoft SQL Server and PostgreSQL
 - Extending the downstream data models and incorporate more comprehensive data quality testing coverage and advanced metrics
+- Adding new models to capture logging data historically (ideally a customisable rolling window)
 - Contributing new dashboards from different tools such as Tableau
 
 If you have any questions, you can contact us at info@divergentinsights.com.au
@@ -49,7 +52,7 @@ As per the high-level architecture diagram, these are the different functionalit
 - Creating and populating simple dbt models to report on `dbt source freshness` and `dbt tests`
   - Raw logging data is modelled downstream and contextualised for reporting purposes
 
-- Bonus - it provides a ready-to-go Power BI report built on top the dbt models to showcase how this data can be used
+- Bonus - it provides a ready-to-go Power BI dashboard built on top the dbt models created by the package to showcase all features
 
 ---
 
@@ -76,7 +79,7 @@ Use the macro `create_resources` to create the backend resources required by the
 - If you have the right permissions, you should be able to run this macro to create all resources required by the dbt_dataquality package
   - For example, a successful run of `dbt run-operation create_resources` will give you the schema, table and staging tables required by the package
 
-If you are in a complex environment with stringent permissions, you can run the macro in "dry mode" which will give you the SQL required by the macro. Once you have the SQL you can copy and paste and run manully the parts of the query that make sense
+If you are in a complex environment with stringent permissions, you can run the macro in "dry mode" which will give you the SQL required by the macro. Once you have the SQL you can copy and paste and run manually the parts of the query that make sense
 - For example, `dbt run-operation create_resources --args '{dry_run:True}'`
 
 Also, keep in mind that the "create_resources" macro creates an internal stage by default. If you are wanting to load log files via an external stage then you can disable the creation of the internal stage
@@ -117,15 +120,15 @@ To use this functionality just follow these simple steps:
 
 ### Add tests to your models
 Just add tests to your models following [the standard dbt testing process](https://docs.getdbt.com/docs/building-a-dbt-project/tests)
-Tip: you may want to use some tests from the dbt package [dbt-expectations](https://github.com/calogica/dbt-expectations#expect_row_values_to_have_recent_data)
+Tip: you may want to use some tests from the awesome dbt package [dbt-expectations](https://github.com/calogica/dbt-expectations#expect_row_values_to_have_recent_data)
 
-### Tag your tets
+### Tag your tests
 Tag any tests that you want to report on with **your preferred data quality attributes**
 
 To keep things simple at Divergent Insights we use [the ISO/IEC 25012:2008 standard](https://www.iso.org/standard/35736.html) to report on data quality (refer to the image below)
 ![Data Product Quality](https://iso25000.com/images/figures/ISO_25012_en.png)
 
-You can read more about ISO 25012 [here](https://iso25000.com/index.php/en/iso-25000-standards/iso-25012); however, here's a summary of the key Data Quality Attributes defined:
+You can read more about ISO 25012 [here](https://iso25000.com/index.php/en/iso-25000-standards/iso-25012); however, here's a summary of the key Data Quality Attributes defined by the standard:
 - **Accuracy**: the degree to which data has attributes that correctly represent the true value of the intended attribute of a concept or event in a specific context of use.
 - **Completeness**: the degree to which subject data associated with an entity has values for all expected attributes and related entity instances in a specific context of use.
 - **Consistency**: the degree to which data has attributes that are free from contradiction and are coherent with other data in a specific context of use. It can be either or both among data regarding one entity and across similar data for comparable entities.
@@ -134,9 +137,9 @@ You can read more about ISO 25012 [here](https://iso25000.com/index.php/en/iso-2
 
 Please note that
 - Tags **MUST** be prefixed with "dq:", for example `dq:accuracy` or `dq:timeliness`
-- Any tag prefixed with "dq:" will be automatically detected and reported on
-- In our case, we use four tags aligned to ISO 25012: `dq:accuracy`, `dq:completeness`, `dq:consistency` and `dq:timeliness` (we don't use credibility)
-- If you are two or more "dq:" tags, only the first tag sorted alphabetically is processed
+- Any tag prefixed with "dq:" will be automatically detected and reported on by the package
+- In our case, we use four tags aligned to ISO 25012: `dq:accuracy`, `dq:completeness`, `dq:consistency` and `dq:timeliness` (we don't use credibility due to obvious reasons)
+- If you add two or more "dq:" tags, only the first tag sorted alphabetically is processed
 
 
 ### Usage Summary
@@ -158,7 +161,7 @@ dbt run --full-refresh --select dbt_dataquality.sources
 dbt run --full-refresh --select dbt_dataquality.tests
 ```
 
-## Dashboards
+## Dashboarding Data Quality Information
 - The models created will allow you to dome some simple but powerful reporting on your data quality (see images below)
 - This package includes a nice and simple Power BI sample dashboard to get you going!
 
@@ -176,6 +179,7 @@ dbt run --full-refresh --select dbt_dataquality.tests
 ## TODO
 - Adding testing suite
 - Adding more complex downstream metrics on Data Quality Coverage
+- When the time is right, adding support for old and new [dbt artifacts schema versions](https://docs.getdbt.com/reference/artifacts/dbt-artifacts), currently on v3 is supported
 
 ## License
 All the content of this repository is licensed under the [**Apache License 2.0**](https://github.com/Divergent-Insights/dbt-dataquality/blob/main/LICENSE)
