@@ -1,8 +1,8 @@
 with latest_records as
 (
-    select payload_id, status, payload_timestamp_utc
-    from {{ ref('raw_source_freshness') }}
-    where payload_timestamp_utc = (select max(payload_timestamp_utc) from {{ ref('raw_source_freshness') }})
+    select payload_id, iff(status='success', 'pass', status) status, payload_timestamp_utc
+   from {{ ref('raw_tests') }}
+    where payload_timestamp_utc = (select max(payload_timestamp_utc) from {{ ref('raw_tests') }})
 ),
 grouped_results as
 (
@@ -13,26 +13,26 @@ grouped_results as
 pivot_results as
 (
     select
-        payload_id, ifnull("'error'",0) as stale, ifnull("'warn'",0) as warning, ifnull("'pass'",0) as pass
+        payload_id, ifnull("'error'",0) as error, ifnull("'fail'",0) as fail, ifnull("'pass'",0) as pass
     from grouped_results
-    pivot(sum(status_count) for status in ('error', 'warn', 'pass'))    
+    pivot(sum(status_count) for status in ('pass', 'fail', 'error'))
 ),
 clean_pivot_results as
 (
     select
         payload_id
         ,case
-            when (stale > 0 or warning > 0) then 'Warning: some data sources require attention'
+            when (error > 0 or fail > 0) then 'Warning: some data quality issues were detected'
             else 'It seems that everything is okay'
         end as status
         ,case
-            when (stale > 0 or warning > 0) then 1
+            when (error > 0 or fail > 0) then 1
             else 0
         end as status_code
-        ,stale
-        ,warning
+        ,error
+        ,fail
         ,pass
-    from pivot_results pr
+    from pivot_results
 )
 select
     distinct
@@ -40,8 +40,8 @@ select
     ,lr.payload_timestamp_utc
     ,cpv.status
     ,cpv.status_code
-    ,cpv.stale
-    ,cpv.warning
+    ,cpv.error
+    ,cpv.fail
     ,cpv.pass
 from latest_records lr
     left join clean_pivot_results cpv on cpv.payload_id = lr.payload_id

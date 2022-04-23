@@ -8,13 +8,12 @@
 with dedup_logs as
 (
     select s.*
-    from {{ source('dbt_dataquality', 'src_dbt_dataquality') }} s
-    inner join (
-        select payload_id, max(upload_timestamp_utc) as upload_timestamp_utc
-        from {{ source('dbt_dataquality', 'src_dbt_dataquality') }}
+    from {{ source('dbt_dataquality', 'stg_dbt_dataquality') }} s
+    where s.upload_timestamp_utc = (
+        select max(upload_timestamp_utc)
+        from {{ source('dbt_dataquality', 'stg_dbt_dataquality') }}
         where filename = 'sources.json.gz'
-        group by payload_id
-    ) dl on s.payload_id = dl.payload_id and s.upload_timestamp_utc = dl.upload_timestamp_utc
+    )
 ),
 flatten_records as
 (
