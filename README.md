@@ -23,7 +23,8 @@ Here's some ideas where we would love your contribution:
 - Adding support for other databases such as Microsoft SQL Server and PostgreSQL
 - Extending the downstream data models and incorporate more comprehensive data quality testing coverage and advanced metrics
 - Contributing new dashboards from different tools such as Tableau
-- If you have any questions, you can contact us at info@divergentinsights.com.au
+
+If you have any questions, you can contact us at info@divergentinsights.com.au
 
 ## High Level Architecture
 
@@ -53,7 +54,10 @@ As per the high-level architecture diagram, these are the different functionalit
 ---
 
 ## Usage
-Set any relevant variables in your dbt_project.yml (optional)
+
+### Package Configuration
+
+Optionally, set any relevant variables in your dbt_project.yml
 
 ```
 vars:
@@ -66,36 +70,45 @@ vars:
 ```
 **Important**: when using an external stage you need to set the parameter `load_from_internal_stage` to `False` on the load_log_* macros. See below for more details
 
-Use the macro `create_resources` to create the required Snowflake resources
+### Resources Creation
+
+Use the macro `create_resources` to create the backend resources required by the package
 - If you have the right permissions, you should be able to run this macro to create all resources required by the dbt_dataquality package
   - For example, a successful run of `dbt run-operation create_resources` will give you the schema, table and staging tables required by the package
 
 If you are in a complex environment with stringent permissions, you can run the macro in "dry mode" which will give you the SQL required by the macro. Once you have the SQL you can copy and paste and run manully the parts of the query that make sense
 - For example, `dbt run-operation create_resources --args '{dry_run:True}'`
 
-- Keep in mind that the "create_resources" macro creates an internal stage by default. If you are wanting to load log files via an external stage then you can disable the creation of the internal stage
+Also, keep in mind that the "create_resources" macro creates an internal stage by default. If you are wanting to load log files via an external stage then you can disable the creation of the internal stage
   - For example, `dbt run-operation create_resources --args '{internal_stage:False}'`
-  
+
+### Generating some log files
+
 Optionally, do a regular run of dbt source freshness or dbt test on your local project to generate some logging files
 - For example ```dbt run``` or ```dbt test```
+
+### Loading log files - Internal Stage
 
 Use the load macros provided by the dbt_quality package to load the dbt logging information that's required
 - Use the macro `load_log_sources` to load sources.json and manifest.json files
 - Use the macro `load_log_tests` to load run_results.json and manifest.json files
-- To load data from an external stage, you must:
-  - Workout on your own how to create and load the data on the external stage
-  - If you are using the `create_resources` macro then set the parameter `create_internal_stage` to `False`
-    - For example: `dbt run-operation create_resources --args '{create_internal_stage: False}'`
-  - Set the package variable `dbt_dataquality_stage: my_external_stage` (as described at the beginning of the Usage section)
-  - When running the `load_log_sources` and `load_log_tests` macros set the parameter `load_from_internal_stage` to `False`
-    - For example: `dbt run-operation load_log_sources --args '{load_from_internal_stage: False}'`
 
-**Create and populate downstream models**
+### Loading log files - External Stage
+To load data from an external stage, you must:
+- Workout on your own how to create, configure and load the data to the external stage
+  - In this case, when running the `create_resources` macro set the parameter `create_internal_stage` to `False`
+    - For example: `dbt run-operation create_resources --args '{create_internal_stage: False}'`
+- Set the package variable `dbt_dataquality_stage: my_external_stage` (as described at the beginning of the Usage section)
+- When running the `load_log_sources` and `load_log_tests` macros set the parameter `load_from_internal_stage` to `False`
+  - For example: `dbt run-operation load_log_sources --args '{load_from_internal_stage: False}'`
+
+### Create and populate downstream models
+
 - Use `dbt run --select dbt_quality.sources` to load source freshness logs
 - Use `dbt run --select dbt_quality.tests` to load tests logs
 
 ## Data Quality Attributes
-This package supports capturing and reporting on Data Quality Attributes, this is a very popular feature!
+This package supports capturing and reporting on Data Quality Attributes; this is a very popular feature!
 
 To use this functionality just following these simple steps:
 
@@ -141,8 +154,8 @@ dbt run --full-refresh --select dbt_dataquality.sources
 dbt run --full-refresh --select dbt_dataquality.tests
 ```
 
-Note that the load_log_* macros automatically upload the relevant log and manifest files
-For example, the macro load_log_sources loads sources.json and manifest.json
+Note that the `load_log_sources` and `load_log_tests` macros automatically upload the relevant log and manifest files
+For example, the macro `load_log_sources` loads sources.json and manifest.json
 
 ## Dashboards
 - The models created will allow you to dome some simple but powerful reporting on your data quality (see images below)
@@ -162,3 +175,8 @@ For example, the macro load_log_sources loads sources.json and manifest.json
 ## TODO
 - Adding testing suite
 - Adding more complex downstream metrics on Data Quality Coverage
+
+## License
+All the content of this repository is licensed under the [**Apache License 2.0**](https://github.com/Divergent-Insights/dbt-dataquality/blob/main/LICENSE)
+
+This is a permissive license whose main conditions require preservation of copyright and license notices. Contributors provide an express grant of patent rights. Licensed works, modifications, and larger works may be distributed under different terms and without source code.
