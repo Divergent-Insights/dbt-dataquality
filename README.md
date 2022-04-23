@@ -5,7 +5,7 @@ This [dbt](https://github.com/dbt-labs/dbt-core) package helps you to
 - Access and report on the outputs from `dbt source freshness` ([sources.json](https://docs.getdbt.com/reference/artifacts/sources-json) and [manifest.json](https://docs.getdbt.com/reference/artifacts/manifest-json))
 - Access and report on the outputs from `dbt test` ([run_results.json](https://docs.getdbt.com/reference/artifacts/run-results-json) and [manifest.json](https://docs.getdbt.com/reference/artifacts/manifest-json))
 
-![Live Demo Dashboard]((https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dbt_dataquality_dashboard_preview.gif)
+<img src="https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dbt_dataquality_dashboard_preview.gif"/>
 
 ## Prerequisites
 
