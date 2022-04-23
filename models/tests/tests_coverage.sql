@@ -39,6 +39,6 @@ select
     * 
     ,sum(total) over (partition by payload_id) as tests_count
     ,sum(pass) over (partition by payload_id) as tests_passed
-    ,((sum(pass) over (partition by payload_id))*100)/(sum(total) over (partition by payload_id)) as tests_coverage
-    ,(pass * 100 / (sum(total) over (partition by payload_id))) as quality_coverage
+    ,((sum(pass) over (partition by payload_id))*100)/(sum(total) over (partition by payload_id)) as overall_tests_success
+    ,(pass * 100 / total) as quality_coverage
 from all_status
