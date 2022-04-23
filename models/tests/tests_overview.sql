@@ -2,7 +2,7 @@ with latest_records as
 (
     select payload_id, iff(status='success', 'pass', status) status, payload_timestamp_utc
    from {{ ref('raw_tests') }}
-    where payload_timestamp_utc = (select max(payload_timestamp_utc)from {{ ref('raw_tests') }})
+    where payload_timestamp_utc = (select max(payload_timestamp_utc) from {{ ref('raw_tests') }})
 ),
 grouped_results as
 (
