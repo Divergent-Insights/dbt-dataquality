@@ -93,6 +93,9 @@ Use the load macros provided by the dbt_quality package to load the dbt logging 
 - Use the macro `load_log_sources` to load sources.json and manifest.json files
 - Use the macro `load_log_tests` to load run_results.json and manifest.json files
 
+Note that the `load_log_sources` and `load_log_tests` macros automatically upload the relevant log and manifest files
+For example, the macro `load_log_sources` loads sources.json and manifest.json and the macro `load_log_tests` loads the files run_results.json and manifest.json
+
 ### Loading log files - External Stage
 To load data from an external stage, you must:
 - Workout on your own how to create, configure and load the data to the external stage
@@ -108,9 +111,9 @@ To load data from an external stage, you must:
 - Use `dbt run --select dbt_quality.tests` to load tests logs
 
 ## Data Quality Attributes
-This package supports capturing and reporting on Data Quality Attributes; this is a very popular feature!
+This package supports capturing and reporting on Data Quality Attributes. This is a very popular feature!
 
-To use this functionality just following these simple steps:
+To use this functionality just follow these simple steps:
 
 ### Add tests to your models
 Just add tests to your models following [the standard dbt testing process](https://docs.getdbt.com/docs/building-a-dbt-project/tests)
@@ -133,6 +136,7 @@ Please note that
 - Tags **MUST** be prefixed with "dq:", for example `dq:accuracy` or `dq:timeliness`
 - Any tag prefixed with "dq:" will be automatically detected and reported on
 - In our case, we use four tags aligned to ISO 25012: `dq:accuracy`, `dq:completeness`, `dq:consistency` and `dq:timeliness` (we don't use credibility)
+- If you are two or more "dq:" tags, only the first tag sorted alphabetically is processed
 
 
 ### Usage Summary
@@ -153,9 +157,6 @@ dbt run --select dbt_dataquality.tests
 dbt run --full-refresh --select dbt_dataquality.sources
 dbt run --full-refresh --select dbt_dataquality.tests
 ```
-
-Note that the `load_log_sources` and `load_log_tests` macros automatically upload the relevant log and manifest files
-For example, the macro `load_log_sources` loads sources.json and manifest.json
 
 ## Dashboards
 - The models created will allow you to dome some simple but powerful reporting on your data quality (see images below)
