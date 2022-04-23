@@ -15,6 +15,13 @@ This [dbt](https://github.com/dbt-labs/dbt-core) package helps to create simple 
   - Internal stage (recommended but optional). Alternatively, you can use an external stage
   - Table
 
+## Contributions
+We love contributions! Currently, we don't have a roadmap for this package so feel free to help where you can
+Here's some ideas where we would love your contribution
+- Adding support for other databases such as Microsoft SQL Server and PostgreSQL
+- Extending the downstream data models and incorporate more comprehensive data quality testing coverage and advanced metrics
+- You can contact us at info@divergentinsights.com.au
+
 ## High Level Architecture
 
 ![High-Level Architecture](https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dbt_dataquality-high_level_architecture.png)
@@ -84,6 +91,34 @@ As per the high-level architecture diagram, these are the different functionalit
   - Use `dbt run --select dbt_quality.sources` to load source freshness logs
   - Use `dbt run --select dbt_quality.tests` to load tests logs
 
+## Data Quality Attributes
+This package supports capturing and reporting on Data Quality Attributes, this is a very popular feature!
+
+To use this functionality just following these simple steps:
+
+### Add tests to your models
+Just add tests to your models following [the standard dbt testing process](https://docs.getdbt.com/docs/building-a-dbt-project/tests)
+Tip: you may want to use some tests from the dbt package [dbt-expectations](https://github.com/calogica/dbt-expectations#expect_row_values_to_have_recent_data)
+
+### Tag your tets
+Tag any tests that you want to report on with **your preferred data quality attributes**
+
+To keep things simple at Divergent Insights we use [the ISO/IEC 25012:2008 standard](https://www.iso.org/standard/35736.html) to report on data quality (refer to the image below)
+![Data Product Quality](https://iso25000.com/images/figures/ISO_25012_en.png)
+
+You can read more about [here](https://iso25000.com/index.php/en/iso-25000-standards/iso-25012); however, it states that data has five key quality characteristics:
+- **Accuracy**: the degree to which data has attributes that correctly represent the true value of the intended attribute of a concept or event in a specific context of use.
+- **Completeness**: the degree to which subject data associated with an entity has values for all expected attributes and related entity instances in a specific context of use.
+- **Consistency**: the degree to which data has attributes that are free from contradiction and are coherent with other data in a specific context of use. It can be either or both among data regarding one entity and across similar data for comparable entities.
+- **Credibility**: the degree to which data has attributes that are regarded as true and believable by users in a specific context of use. Credibility includes the concept of authenticity (the truthfulness of origins, attributions, commitments).
+- **Currentness / Timeliness**: the degree to which data has attributes that are of the right age in a specific context of use.
+
+Please note that
+- Tags **MUST** be prefixed with "dq:", for example `dq:accuracy` or `dq:timeliness`
+- Any tag prefixed with "dq:" will be automatically detected and reported on
+- In our case, we use four tags aligned to ISO 25012: `dq:accuracy`, `dq:completeness`, `dq:consistency` and `dq:timeliness` (we don't use credibility)
+
+
 ### Usage Summary
 Here's all the steps put together:
 ```
@@ -122,7 +157,5 @@ For example, the macro load_log_sources loads sources.json and manifest.json
 ---
 
 ## TODO
-- Data loading will be generalised and extended to handle Snowflake internal and external stages
-- This preliminary version focuses on setting the foundations of the packages and logs flattenning
-- Next iterations of the package will enhance the downstream models
-- Also, a simple dynamic tagging functionality will be added to make nice and simple tests reporting
+- Adding testing suite
+- Adding more complex downstream metrics on Data Quality Coverage
