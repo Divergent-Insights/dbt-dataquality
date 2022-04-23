@@ -1,14 +1,14 @@
 # dbt Data Quality
 
-This [dbt](https://github.com/dbt-labs/dbt-core) package helps to create simple data models from the outputs of `dbt sources freshness` and `dbt tests`. That is, this package will help you to
+This [dbt](https://github.com/dbt-labs/dbt-core) package helps you to
 
-- Access and report on the output from dbt source freshness (sources.json, manifest.json)
-- Access and report on the output from dbt tests (run_results.json, manifest.json)
+- Access and report on the output from `dbt source freshness` (sources.json and manifest.json)
+- Access and report on the output from `dbt test` (run_results.json and manifest.json)
 
 ## Prerequisites
 
 - This package is compatible with dbt 1.0.0 and later
-- This packages uses Snowflake as the backend for reporting. Contributions are welcomed to support other backend engines
+- This packages uses Snowflake as the backend for reporting (contributions to support other backend engines are welcomed)
 - Snowflake credentials with the right level of access to create/destroy and configure the following objects:
   - Database (optional)
   - Schema (optional)
@@ -17,16 +17,19 @@ This [dbt](https://github.com/dbt-labs/dbt-core) package helps to create simple 
 
 ## Contributions
 We love contributions! Currently, we don't have a roadmap for this package so feel free to help where you can
-Here's some ideas where we would love your contribution
+
+Here's some ideas where we would love your contribution:
+
 - Adding support for other databases such as Microsoft SQL Server and PostgreSQL
 - Extending the downstream data models and incorporate more comprehensive data quality testing coverage and advanced metrics
-- You can contact us at info@divergentinsights.com.au
+- Contributing new dashboards from different tools such as Tableau
+- If you have any questions, you can contact us at info@divergentinsights.com.au
 
 ## High Level Architecture
 
 ![High-Level Architecture](https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dbt_dataquality-high_level_architecture.png)
 
-## Package Overview
+## Architecture Overview
 
 As per the high-level architecture diagram, these are the different functionalities that this package provides:
 
@@ -37,10 +40,10 @@ As per the high-level architecture diagram, these are the different functionalit
   - Creates a variant-column staging table
 
 - Loads dbt logging information on an internal stage
-  - This is achieved via a set of dbt macros together with the Snowflake PUT command
+  - This is achieved via a set of dbt macros together leveraging Snowflake PUT command
 
 - Copies dbt logging information into a Snowflake table
-  - This is achieved via a set of dbt macros together with the Sowflake COPY command
+  - This is achieved via a set of dbt macros together leveraging Sowflake COPY command
 
 - Creating and populating simple dbt models to report on `dbt source freshness` and `dbt tests`
   - Raw logging data is modelled downstream and contextualised for reporting purposes
@@ -50,46 +53,46 @@ As per the high-level architecture diagram, these are the different functionalit
 ---
 
 ## Usage
-- Set any relevant variables in your dbt_project.yml (optional)
+Set any relevant variables in your dbt_project.yml (optional)
 
-  ```
-  vars:
-    dbt_dataquality:
-      dbt_dataquality_database: my_database # optional, default is target.database
-      dbt_dataquality_schema: my_schema # optional, default is target.schema
-      dbt_dataquality_table: my_table # optional, default is 'stg_dbt_dataquality'
-      dbt_dataquality_stage: my_internal_stage | my_external_stage, default is 'dbt_dataquality'),
-      dbt_dataquality_target_path: my_dbt_target_directory # optional, default is 'target'
-  ```
-  **Important**: when using an external stage you need to set the parameter `load_from_internal_stage` to `False` on the load_log_* macros. See below for more details
+```
+vars:
+  dbt_dataquality:
+    dbt_dataquality_database: my_database # optional, default is target.database
+    dbt_dataquality_schema: my_schema # optional, default is target.schema
+    dbt_dataquality_table: my_table # optional, default is 'stg_dbt_dataquality'
+    dbt_dataquality_stage: my_internal_stage | my_external_stage, default is 'dbt_dataquality'),
+    dbt_dataquality_target_path: my_dbt_target_directory # optional, default is 'target'
+```
+**Important**: when using an external stage you need to set the parameter `load_from_internal_stage` to `False` on the load_log_* macros. See below for more details
 
-- Use the macro `create_resources` to create the required Snowflake resources
-  - If you have the right permissions, you should be able to run this macro to create all resources required by the dbt_dataquality package
-    - For example, a successful run of `dbt run-operation create_resources` will give you the schema, table and staging tables required by the package
+Use the macro `create_resources` to create the required Snowflake resources
+- If you have the right permissions, you should be able to run this macro to create all resources required by the dbt_dataquality package
+  - For example, a successful run of `dbt run-operation create_resources` will give you the schema, table and staging tables required by the package
 
-  - If you are in a complex environment with stringent permissions, you can run the macro in "dry mode" which will give you the SQL required by the macro. Once you have the SQL you can copy and paste and run manully the parts of the query that make sense
-    - For example, `dbt run-operation create_resources --args '{dry_run:True}'`
+If you are in a complex environment with stringent permissions, you can run the macro in "dry mode" which will give you the SQL required by the macro. Once you have the SQL you can copy and paste and run manully the parts of the query that make sense
+- For example, `dbt run-operation create_resources --args '{dry_run:True}'`
 
-  - Keep in mind that the "create_resources" macro creates an internal stage by default. If you are wanting to load log files via an external stage then you can disable the creation of the internal stage
-    - For example, `dbt run-operation create_resources --args '{internal_stage:False}'`
+- Keep in mind that the "create_resources" macro creates an internal stage by default. If you are wanting to load log files via an external stage then you can disable the creation of the internal stage
+  - For example, `dbt run-operation create_resources --args '{internal_stage:False}'`
+  
+Optionally, do a regular run of dbt source freshness or dbt test on your local project to generate some logging files
+- For example ```dbt run``` or ```dbt test```
 
-- Optionally, do a regular run of dbt source freshness or dbt test on your local project to generate some logging files
-  - For example ```dbt run``` or ```dbt test```
+Use the load macros provided by the dbt_quality package to load the dbt logging information that's required
+- Use the macro `load_log_sources` to load sources.json and manifest.json files
+- Use the macro `load_log_tests` to load run_results.json and manifest.json files
+- To load data from an external stage, you must:
+  - Workout on your own how to create and load the data on the external stage
+  - If you are using the `create_resources` macro then set the parameter `create_internal_stage` to `False`
+    - For example: `dbt run-operation create_resources --args '{create_internal_stage: False}'`
+  - Set the package variable `dbt_dataquality_stage: my_external_stage` (as described at the beginning of the Usage section)
+  - When running the `load_log_sources` and `load_log_tests` macros set the parameter `load_from_internal_stage` to `False`
+    - For example: `dbt run-operation load_log_sources --args '{load_from_internal_stage: False}'`
 
-- Use the load macros provided by the dbt_quality package to load the dbt logging information that's required
-  - Use the macro `load_log_sources` to load sources.json and manifest.json files
-  - Use the macro `load_log_tests` to load run_results.json and manifest.json files
-  - To load data from an external stage, you must:
-    - Workout on your own how to create and load the data on the external stage
-    - If you are using the `create_resources` macro then set the parameter `create_internal_stage` to `False`
-      - For example: `dbt run-operation create_resources --args '{create_internal_stage: False}'`
-    - Set the package variable `dbt_dataquality_stage: my_external_stage` (as described at the beginning of the Usage section)
-    - When running the `load_log_sources` and `load_log_tests` macros set the parameter `load_from_internal_stage` to `False`
-      - For example: `dbt run-operation load_log_sources --args '{load_from_internal_stage: False}'`
-
-- Create and populate downstream models
-  - Use `dbt run --select dbt_quality.sources` to load source freshness logs
-  - Use `dbt run --select dbt_quality.tests` to load tests logs
+**Create and populate downstream models**
+- Use `dbt run --select dbt_quality.sources` to load source freshness logs
+- Use `dbt run --select dbt_quality.tests` to load tests logs
 
 ## Data Quality Attributes
 This package supports capturing and reporting on Data Quality Attributes, this is a very popular feature!
