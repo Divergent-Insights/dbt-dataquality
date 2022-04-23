@@ -107,10 +107,17 @@ Note that the load_log_* macros automatically upload the relevant log and manife
 For example, the macro load_log_sources loads sources.json and manifest.json
 
 ## Dashboards
-- The models created will allow you to dome some simple but powerful reporting as per the image below
+- The models created will allow you to dome some simple but powerful reporting on your data quality (see images below)
 - This package includes a nice and simple Power BI sample dashboard to get you going!
 
+### Sources Overview Dashboard
 ![Sample Dashboard](https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dashboard1.png)
+
+### Tests Overview Dashboard
+![Sample Dashboard](https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dashboard2.png)
+
+### Data Quality Attributes
+![Sample Dashboard](https://raw.githubusercontent.com/Divergent-Insights/dbt-dataquality/main/dashboards/dashboard3.png)
 
 ---
 
