@@ -122,7 +122,7 @@ Tag any tests that you want to report on with **your preferred data quality attr
 To keep things simple at Divergent Insights we use [the ISO/IEC 25012:2008 standard](https://www.iso.org/standard/35736.html) to report on data quality (refer to the image below)
 ![Data Product Quality](https://iso25000.com/images/figures/ISO_25012_en.png)
 
-You can read more about [here](https://iso25000.com/index.php/en/iso-25000-standards/iso-25012); however, it states that data has five key quality characteristics:
+You can read more about ISO 25012 [here](https://iso25000.com/index.php/en/iso-25000-standards/iso-25012); however, here's a summary of the key Data Quality Attributes defined:
 - **Accuracy**: the degree to which data has attributes that correctly represent the true value of the intended attribute of a concept or event in a specific context of use.
 - **Completeness**: the degree to which subject data associated with an entity has values for all expected attributes and related entity instances in a specific context of use.
 - **Consistency**: the degree to which data has attributes that are free from contradiction and are coherent with other data in a specific context of use. It can be either or both among data regarding one entity and across similar data for comparable entities.
