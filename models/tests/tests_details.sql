@@ -24,5 +24,6 @@ select
     ,tm.column_name
     ,lr.status
     ,lr.status_code 
-from {{ ref('raw_tests_manifest') }} tm
-    left join latest_records lr on lr.unique_id = tm.unique_id
+from latest_records lr 
+    left join {{ ref('raw_tests_manifest') }} tm
+        on lr.unique_id = tm.unique_id
