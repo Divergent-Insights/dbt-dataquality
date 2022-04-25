@@ -179,7 +179,7 @@ dbt run --full-refresh --select dbt_dataquality.tests
 ## TODO
 - Adding testing suite
 - Adding more complex downstream metrics on Data Quality Coverage
-- When the time is right, adding support for old and new [dbt artifacts schema versions](https://docs.getdbt.com/reference/artifacts/dbt-artifacts), currently on v3 is supported
+- When the time is right, adding support for old and new [dbt artifacts schema versions](https://docs.getdbt.com/reference/artifacts/dbt-artifacts), currently only v3 is supported
 
 ## License
 All the content of this repository is licensed under the [**Apache License 2.0**](https://github.com/Divergent-Insights/dbt-dataquality/blob/main/LICENSE)

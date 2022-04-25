@@ -1,8 +1,8 @@
-{% macro create_resources(dry_run=False, create_internal_stage=True) %}
+{% macro create_resources(dry_run=False, internal_stage=True) %}
 
   {{ create_schema(dry_run) }}
 
-  {% if create_internal_stage %}
+  {% if internal_stage %}
       {{ create_internal_stage(dry_run) }}
   {% endif %}
 
