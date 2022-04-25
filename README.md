@@ -102,8 +102,8 @@ For example, the macro `load_log_sources` loads sources.json and manifest.json a
 ### Loading log files - External Stage
 To load data from an external stage, you must:
 - Workout on your own how to create, configure and load the data to the external stage
-  - In this case, when running the `create_resources` macro set the parameter `create_internal_stage` to `False`
-    - For example: `dbt run-operation create_resources --args '{create_internal_stage: False}'`
+  - In this case, when running the `create_resources` macro set the parameter `internal_stage` to `False`
+    - For example: `dbt run-operation create_resources --args '{internal_stage: False}'`
 - Set the package variable `dbt_dataquality_stage: my_external_stage` (as described at the beginning of the Usage section)
 - When running the `load_log_sources` and `load_log_tests` macros set the parameter `load_from_internal_stage` to `False`
   - For example: `dbt run-operation load_log_sources --args '{load_from_internal_stage: False}'`
