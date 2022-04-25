@@ -102,8 +102,8 @@ For example, the macro `load_log_sources` loads sources.json and manifest.json a
 ### Loading log files - External Stage
 To load data from an external stage, you must:
 - Workout on your own how to create, configure and load the data to the external stage
-  - In this case, when running the `create_resources` macro set the parameter `create_internal_stage` to `False`
-    - For example: `dbt run-operation create_resources --args '{create_internal_stage: False}'`
+  - In this case, when running the `create_resources` macro set the parameter `internal_stage` to `False`
+    - For example: `dbt run-operation create_resources --args '{internal_stage: False}'`
 - Set the package variable `dbt_dataquality_stage: my_external_stage` (as described at the beginning of the Usage section)
 - When running the `load_log_sources` and `load_log_tests` macros set the parameter `load_from_internal_stage` to `False`
   - For example: `dbt run-operation load_log_sources --args '{load_from_internal_stage: False}'`
@@ -179,7 +179,7 @@ dbt run --full-refresh --select dbt_dataquality.tests
 ## TODO
 - Adding testing suite
 - Adding more complex downstream metrics on Data Quality Coverage
-- When the time is right, adding support for old and new [dbt artifacts schema versions](https://docs.getdbt.com/reference/artifacts/dbt-artifacts), currently on v3 is supported
+- When the time is right, adding support for old and new [dbt artifacts schema versions](https://docs.getdbt.com/reference/artifacts/dbt-artifacts), currently only v3 is supported
 
 ## License
 All the content of this repository is licensed under the [**Apache License 2.0**](https://github.com/Divergent-Insights/dbt-dataquality/blob/main/LICENSE)
