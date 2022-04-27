@@ -2,6 +2,7 @@
 
   {% if schema %}
     {{ create_schema(dry_run) }}
+  {% endif %}    
 
   {% if internal_stage %}
     {{ create_internal_stage(dry_run) }}
