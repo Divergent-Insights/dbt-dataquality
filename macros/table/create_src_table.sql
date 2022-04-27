@@ -1,4 +1,4 @@
-{% macro create_src_table(replace=False, dry_run=False) %}
+{% macro create_src_table(replace=false, dry_run=false) %}
 
     {% do log("create_src_table started", info=True) %}
     {% set config = _get_config() %}
@@ -18,7 +18,7 @@
         );
     {% endset %}
 
-    {% if dry_run %}
+    {% if not dry_run %}
         {% do run_query(sql) %}
     {% endif %}
 

@@ -1,4 +1,4 @@
-{% macro create_internal_stage(dry_run=False) %}
+{% macro create_internal_stage(dry_run=false) %}
 
     {% do log("create_internal_stage started", info=True) %}
     {% set config = _get_config() %}
@@ -8,7 +8,7 @@
         file_format = ( type = json );        
     {% endset %}
 
-    {% if dry_run %}
+    {% if not dry_run %}
         {% do run_query(sql) %}
     {% endif %}
 
