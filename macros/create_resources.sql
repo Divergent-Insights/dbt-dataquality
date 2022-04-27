@@ -1,6 +1,6 @@
-{% macro create_resources(dry_run=False, internal_stage=true, schema=true) %}
+{% macro create_resources(dry_run=False, internal_stage=true, create_default_schema=true) %}
 
-  {% if schema %}
+  {% if create_default_schema %}
     {{ create_schema(dry_run) }}
   {% endif %}    
 
