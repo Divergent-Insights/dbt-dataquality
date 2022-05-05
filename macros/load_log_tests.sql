@@ -1,13 +1,17 @@
-{% macro load_log_tests(load_from_internal_stage=True) %}
+{% macro load_log_tests(load_from_internal_stage=true, clean_stage=true) %}
 
-  {{ load_log_manifest(load_from_internal_stage) }}
+  -- Removing all files from the internal stage
+  {% if clean_stage %}
+      {{ clean_internal_stage() }}
+  {% endif %}  
 
   {% set config = _get_config() %}
   {% set log_file = config["dbt_target_path"] ~ '/run_results.json' %}
 
   {% if load_from_internal_stage %}
+      {{ load_log_manifest() }}
       {{ load_internal_stage(file=log_file) }}
-  {% endif %}
+  {% endif %}  
 
   {{ load_src_table() }}
 
