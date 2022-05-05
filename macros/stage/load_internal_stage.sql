@@ -1,12 +1,7 @@
-{% macro load_internal_stage(file, clean_stage=true) %}
+{% macro load_internal_stage(file) %}
 
     {% do log("load_internal_stage started", info=True) %}
     {% set config = _get_config() %}
-
-    -- Removing all files from the internal stage
-    {% if clean_stage == true %}
-        {{ clean_internal_stage() }}
-    {% endif %}
 
     -- Populating internal stage
     {% set sql %}
