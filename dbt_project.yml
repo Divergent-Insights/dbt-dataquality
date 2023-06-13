@@ -19,3 +19,6 @@ models:
       +tags: sources
     tests:
       +tags: tests
+
+vars:
+  surrogate_key_treat_nulls_as_empty_strings: true 
