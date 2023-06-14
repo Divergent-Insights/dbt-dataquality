@@ -21,7 +21,7 @@ flatten_records as
         ,tests_content.key
         ,case
             when tests_content.key = 'tags' 
-                then coalesce(replace(replace(replace(regexp_substr(replace(replace(tests_content.value,' '),'\'','"'), '(dq:)[^,]+(",)|(dq:)[^,]+("])'),'dq:'),'",'),'"]'),'unkonwn')
+                then coalesce(replace(replace(replace(regexp_substr(replace(replace(tests_content.value,' '),'\'','"'), '(dq:)[^,]+(",)|(dq:)[^,]+("])'),'dq:'),'",'),'"]'),'unknown')
             when tests_content.key = 'column_name' 
                 then coalesce(tests_content.value, 'n/a')
             else tests_content.value

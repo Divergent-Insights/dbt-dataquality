@@ -18,7 +18,7 @@ with dedup_logs as
 flatten_records as
 (
     select
-        {{ dbt_utils.surrogate_key(['payload_id', 'payload_timestamp_utc', 'results.value:unique_id']) }} as id,
+        {{ dbt_utils.generate_surrogate_key(['payload_id', 'payload_timestamp_utc', 'results.value:unique_id']) }} as id,
         payload_id,
         payload_timestamp_utc,
         results.value:unique_id::string as unique_id,
